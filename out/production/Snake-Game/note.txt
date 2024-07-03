@@ -1,0 +1,7 @@
+node -> contains three states ".", "F", "*"
+game -> it has 2 main component
+        1 -> GRID
+            -> it is a main grid were the snake game logics will be applied
+        2 -> queue
+            -> it is a snake represented queue
+            -> It actually contains the snakes position
