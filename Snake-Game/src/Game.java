@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Game {
 
-    private final Node GRID[][];
+    private final Node[][] GRID;
     private final LinkedList<Position> snake;
     private final Scanner scanner;
 
