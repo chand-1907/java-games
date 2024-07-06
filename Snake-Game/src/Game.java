@@ -5,8 +5,14 @@ public class Game {
     private final Node[][] GRID;
     private final LinkedList<Position> snake;
     private final Scanner scanner;
+    private int foodCount;
 
     public Game (int rows, int cols) {
+
+        // row and column validation
+        if (!Validation.InputValidator.rowColumnValidator(rows, cols))
+            throw new InputMismatchException("Row and column range is 2 - 10");
+
         this.GRID = new Node[rows][cols];
 
         for (int i = 0; i < rows; i++)
@@ -77,6 +83,9 @@ public class Game {
         if (node.state == States.FOOD) {
             node.state = States.SNAKE;
             this.snake.add(new Position (x, y));
+
+            if (--this.foodCount <= 0)
+                randomFoodAllocation(1);
         }
 
         else if (node.state == States.EMPTY) {
@@ -100,9 +109,9 @@ public class Game {
 
     private void init () {
         System.out.print("Enter the food count : ");
-        int count = scanner.nextByte();
+        foodCount = scanner.nextByte();
 
-        if (!Validation.InputValidator.foodCountValidate(count)) {
+        if (!Validation.InputValidator.foodCountValidate(foodCount) && foodCount < this.GRID.length * this.GRID[0].length - 4) {
             throw new InputMismatchException("food count must be in the range of : (" + Constants.MIN_FOOD_COUNT + " - " + Constants.MAX_FOOD_COUNT + ")");
         }
 
@@ -116,13 +125,13 @@ public class Game {
         
         switch (allocator) {
             case 1 : {
-                positionSet = randomFoodAllocation (count);
+                positionSet = randomFoodAllocation (foodCount);
                 break;
             }
 
             case 2 : {
                 System.out.println("Manual initializer...");
-                positionSet = manualFoodAllocation (count);
+                positionSet = manualFoodAllocation (foodCount);
                 break;
             }
 
@@ -141,7 +150,7 @@ public class Game {
             int x = (int) (Math.random() * GRID.length);
             int y = (int) (Math.random() * GRID[0].length);
 
-            while (!positionSet.add(new Position (x, y))) {
+            while (this.GRID[x][y].state == States.SNAKE || !positionSet.add(new Position (x, y))) {
                 x = (int) (Math.random() * GRID.length);
                 y = (int) (Math.random() * GRID[0].length);
             }
